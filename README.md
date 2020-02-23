@@ -8,3 +8,10 @@ Python 3, BeautifulSoup4
 
 Output
 *Csv file*
+
+## Development
+
+- Install dependencies
+```bash
+$ pip install -r requirements.txt
+```
