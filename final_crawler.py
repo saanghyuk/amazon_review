@@ -6,7 +6,11 @@ from urllib.parse import quote
 # Input Search Query
 SEARCH_QUERY = 'tv'
 
+<<<<<<< HEAD
 PROXY_CRAWL_TOKEN = '8wJqpL2FErGiPGX7QWP6Aw'
+=======
+PROXY_CRAWL_TOKEN = 'K-9nDJsiR1tb0vbXVAaSOQ'
+>>>>>>> 2b2907b49c49565c7132c51d379b357862b9727c
 def get_proxy(url):
     quoted_url = quote(url)
     res = requests.get(f'https://api.proxycrawl.com/?token={PROXY_CRAWL_TOKEN}&url={quoted_url}')
