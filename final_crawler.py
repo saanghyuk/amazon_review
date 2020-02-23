@@ -19,55 +19,54 @@ header = {
 #### A function to get the content of the page of required query
 cookie = {} # insert request cookies within{}
 def search_in_amazon(search_query):
-    url = "https://www.amazon.com/s?k=" + search_query
+    url = f"https://www.amazon.com/s?k={search_query}"
     page = requests.get(url, cookies=cookie, headers=header)
     if page.status_code == 200:
-        print("yes")
         return page
     else:
-        print("No")
-        return "Error"
-
+        raise Exception(f"Failed to search in amazon: {url}")
 
 #### A function to get the contents of individual product pages using 'data-asin' number (unique identification number)
 
 def search_asin(asin):
-    url="https://www.amazon.com/dp/"+asin
-    print(url)
-    page=requests.get(url,cookies=cookie,headers=header)
-    print(page)
+    url = f"https://www.amazon.com/dp/{asin}"
+    print(f"search_asin: {url}")
+    page = requests.get(url,cookies=cookie,headers=header)
     if page.status_code==200:
         return page
     else:
-        return "Error"
+        raise Exception(f'Failed to search asin: {page}')
 
 #### A function to pass on the link of 'see all reviews' and extract the content
 def search_reviews(review_link):
-    url="https://www.amazon.com"+review_link
-    print(url)
-    page=requests.get(url,cookies=cookie,headers=header)
+    url = "https://www.amazon.com{review_link}"
+    print(f"search_reviews: {url}")
+    page = requests.get(url,cookies=cookie,headers=header)
     if page.status_code==200:
         return page
     else:
-        return "Error"
+        raise Exception(f"Failed to search reviews: {url}")
 
 ### Product Name extraction
 
+print("Start to extract product names")
+
 product_names = []
 data_asin = []
-for i in range(1,21):
+LAST_PAGE = 21
+for i in range(1,LAST_PAGE):
+    print(f"Iteration {i}/{LAST_PAGE}")
     response = search_in_amazon(search_query+'&page='+str(i))
-    time.sleep(1) # Why does it exist?
     soup = BeautifulSoup(response.content)
-    print("hello")
     for i in soup.findAll("span",{'class':'a-size-medium a-color-base a-text-normal'}):
-        print("hi")
-        product_names.append(i.text) #adding the product names to the list
+        product_names.append(i.text) # adding the product names to the list
 
     for i in soup.findAll("div", {"class":"s-result-item"}):
-        print("bye")
         if i['data-asin']:
             data_asin.append(i['data-asin'])
+
+print("Finished extract product names")
+print(product_names)
 
 '''
 When scrawling the all pages of product list in specific search query, I could discover that there are same products in the list. <br>
