@@ -1,9 +1,10 @@
 # amazon_review 
 
-Sanghyuk Son, 2020/02/17
-Amazon Reviews all pages
+2020/02/17
 
-Python 3, BeautifulSoup4
+Amazon Reviews Crawler
+
+
 
 
 Output
@@ -15,3 +16,13 @@ Output
 ```bash
 $ pip install -r requirements.txt
 ```
+
+
+
+
+
+# Contributer
+- `Sanghyuk Son` email: saanghyuk@gmail.com, github: https://github.com/saanghyuk
+
+* `Jaeseong Seo` email: 07js23@gmail.com, github: https://github.com/js-seo
+* `Hyunwoo Jung` email: chaosphch@gmail.com, github: <https://github.com/chphch>
