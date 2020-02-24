@@ -27,7 +27,7 @@ def search_asin(asin):
 
 #### A function to pass on the link of 'see all reviews' and extract the content
 def search_reviews(review_link):
-    url = "https://www.amazon.com{review_link}"
+    url = f"https://www.amazon.com{review_link}"
     return get_proxy(url)
 
 ### Product Name extraction
@@ -89,21 +89,24 @@ reviews=[]
 # dates=[]
 
 for j in range(len(link)):
-    print(f"Searching reviews: {i}/{len(link)}")
+    print(f"Searching reviews: {j}/{len(link)}")
     for k in range(1, 2):
         html = search_reviews(link[j]+'&pageNumber='+str(k))
         soup = BeautifulSoup(html, 'html5lib')
-        if soup.find('div',
-                     {"class" : "a-section a-spacing-top-large a-text-center no-reviews-section"}):
+        if soup.find(
+            'div',
+            {"class" : "a-section a-spacing-top-large a-text-center no-reviews-section"}
+        ):
             print('No review, Pass')
             break
         else:
-            items = soup.findAll("span",{'data-hook':"a-size-base review-text review-text-content"})
+            items = soup.findAll("span",{'data-hook':"review-body"})
             print(f"{len(items)} reviews found")
-#           for i in soup.findAll("span",{'data-hook':"review-body"}):
             for i in items:
-                reviews.append(i.text)
-                search_query_list.append(search_query)
+                for child in i.children:
+                    if child.string:
+                        reviews.append(child.string)
+                        search_query_list.append(SEARCH_QUERY)
 
 print(f"Finished: {len(reviews)} reviews found")
 
