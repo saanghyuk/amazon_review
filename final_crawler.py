@@ -6,11 +6,9 @@ from urllib.parse import quote
 # Input Search Query
 SEARCH_QUERY = 'tv'
 
-<<<<<<< HEAD
 PROXY_CRAWL_TOKEN = '8wJqpL2FErGiPGX7QWP6Aw'
-=======
-PROXY_CRAWL_TOKEN = 'K-9nDJsiR1tb0vbXVAaSOQ'
->>>>>>> 2b2907b49c49565c7132c51d379b357862b9727c
+# PROXY_CRAWL_TOKEN = 'K-9nDJsiR1tb0vbXVAaSOQ'
+
 def get_proxy(url):
     quoted_url = quote(url)
     res = requests.get(f'https://api.proxycrawl.com/?token={PROXY_CRAWL_TOKEN}&url={quoted_url}')
@@ -43,31 +41,34 @@ for i in range(1,LAST_PAGE):
     print(f"Iteration {i}/{LAST_PAGE}")
     html = search_in_amazon(SEARCH_QUERY+'&page='+str(i))
     soup = BeautifulSoup(html, 'html5lib')
-    for i in soup.findAll("span",{'class':'a-size-medium a-color-base a-text-normal'}):
+    items = soup.findAll("span",{'class':'a-size-medium a-color-base a-text-normal'})
+    if len(items) == 0:
+        print(f"Warning: No product name found in this page")
+    for i in items:
         product_names.append(i.text) # adding the product names to the list
 
     for i in soup.findAll("div", {"class":"s-result-item"}):
         if i['data-asin']:
             data_asin.append(i['data-asin'])
 
-print("Finished extract product names")
-print(product_names)
+print(f"Finished: {len(product_names)} product names found")
 
 '''
 When scrawling the all pages of product list in specific search query, I could discover that there are same products in the list. <br>
 Therefore, I needed to remove the same product in the list of ASIN.
 '''
 
-asin_list = list(dict.fromkeys(data_asin) )
+print("Start to search asin")
+
+asin_list = list(dict.fromkeys(data_asin))
 data_asin = asin_list
 
 link=[]
 for i in range(len(data_asin)):
-    print(i)
+    print(f"Searching asin {i}/{len(data_asin)}")
     html = search_asin(data_asin[i])
     soup = BeautifulSoup(html, 'html5lib')
     for i in soup.findAll("a",{'data-hook':"see-all-reviews-link-foot"}):
-        print(i['href'])
         link.append(i['href'])
 
 #     if soup.find("a",{'data-hook':"see-all-reviews-link-foot"}):
@@ -76,8 +77,10 @@ for i in range(len(data_asin)):
 #     else:
 #         print("There is no see all button")
 
+print(f"Finished: {len(link)} links found")
 # The number of link and the number of ASIN can be different, because there are many products which have no review.
 
+print("Start to search reviews")
 # urls=[]
 # titles = []
 search_query_list = []
@@ -86,7 +89,7 @@ reviews=[]
 # dates=[]
 
 for j in range(len(link)):
-    print(j, 'th started')
+    print(f"Searching reviews: {i}/{len(link)}")
     for k in range(1, 2):
         html = search_reviews(link[j]+'&pageNumber='+str(k))
         soup = BeautifulSoup(html, 'html5lib')
@@ -95,12 +98,16 @@ for j in range(len(link)):
             print('No review, Pass')
             break
         else:
-            print('There is review')
+            items = soup.findAll("span",{'data-hook':"a-size-base review-text review-text-content"})
+            print(f"{len(items)} reviews found")
 #           for i in soup.findAll("span",{'data-hook':"review-body"}):
-            for i in soup.findAll("span",{'data-hook':"a-size-base review-text review-text-content"}):
+            for i in items:
                 reviews.append(i.text)
                 search_query_list.append(search_query)
 
+print(f"Finished: {len(reviews)} reviews found")
+
+print("Start to generate report")
 # rev={'dates':dates, 'titles':titles, 'ratings':ratings, 'reviews':reviews, 'url':urls} #converting the reviews list into a dictionary
 
 rev={'search_query':search_query_list, 'reviews' :reviews} #converting the reviews list into a dictionary
@@ -108,6 +115,7 @@ review_data=pd.DataFrame.from_dict(rev) #converting this dictionary into a dataf
 
 df = review_data.replace('\n','', regex=True)
 
-writer= pd.ExcelWriter(SEARCH_QUERY+'_review.xlsx')
+writer = pd.ExcelWriter(SEARCH_QUERY+'_review.xlsx')
 df.to_excel(writer, 'Sheet1', index=False)
 writer.save()
+print("Success")
