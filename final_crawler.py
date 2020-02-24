@@ -42,7 +42,7 @@ LAST_PAGE = 21
 for i in range(1,LAST_PAGE):
     print(f"Iteration {i}/{LAST_PAGE}")
     html = search_in_amazon(SEARCH_QUERY+'&page='+str(i))
-    soup = BeautifulSoup(html)
+    soup = BeautifulSoup(html, 'html5lib')
     for i in soup.findAll("span",{'class':'a-size-medium a-color-base a-text-normal'}):
         product_names.append(i.text) # adding the product names to the list
 
@@ -65,7 +65,7 @@ link=[]
 for i in range(len(data_asin)):
     print(i)
     html = search_asin(data_asin[i])
-    soup = BeautifulSoup(html)
+    soup = BeautifulSoup(html, 'html5lib')
     for i in soup.findAll("a",{'data-hook':"see-all-reviews-link-foot"}):
         print(i['href'])
         link.append(i['href'])
@@ -89,7 +89,7 @@ for j in range(len(link)):
     print(j, 'th started')
     for k in range(1, 2):
         html = search_reviews(link[j]+'&pageNumber='+str(k))
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, 'html5lib')
         if soup.find('div',
                      {"class" : "a-section a-spacing-top-large a-text-center no-reviews-section"}):
             print('No review, Pass')
