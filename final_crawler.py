@@ -90,26 +90,28 @@ reviews=[]
 
 for j in range(len(link)):
     print(f"Searching reviews: {j}/{len(link)}")
-    for k in range(1, 2):
+    for k in range(1, 1500):
+        print(f"Finished: {len(reviews)} reviews found")
         html = search_reviews(link[j]+'&pageNumber='+str(k))
         soup = BeautifulSoup(html, 'html5lib')
         if soup.find(
             'div',
             {"class" : "a-section a-spacing-top-large a-text-center no-reviews-section"}
         ):
-            print('No review, Pass')
+            print('No review, Pass') 
             break
         else:
-            items = soup.findAll("span",{'data-hook':"review-body"})
+            items = soup.select('span[data-hook="review-body"] > span')
             print(f"{len(items)} reviews found")
             for i in items:
-                for child in i.children:
-                    if child.string:
-                        reviews.append(child.string)
-                        search_query_list.append(SEARCH_QUERY)
+                if i.text== '':
+                    "there is one blank span element"
+                    continue
+                else:
+                    reviews.append(i.text)
+                    search_query_list.append(SEARCH_QUERY)
 
 print(f"Finished: {len(reviews)} reviews found")
-
 print("Start to generate report")
 # rev={'dates':dates, 'titles':titles, 'ratings':ratings, 'reviews':reviews, 'url':urls} #converting the reviews list into a dictionary
 
