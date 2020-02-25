@@ -104,12 +104,17 @@ for j in range(len(link)):
             items = soup.select('span[data-hook="review-body"] > span')
             print(f"{len(items)} reviews found")
             for i in items:
+<<<<<<< HEAD
                 if i.text== '':
                     "there is one blank span element"
                     continue
                 else:
                     reviews.append(i.text)
                     search_query_list.append(SEARCH_QUERY)
+=======
+                reviews.append(i.text)
+                search_query_list.append(SEARCH_QUERY)
+>>>>>>> be7c30a63cf3e89a0cedc50526222d5fb680c44d
 
 print(f"Finished: {len(reviews)} reviews found")
 print("Start to generate report")
