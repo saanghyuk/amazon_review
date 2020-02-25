@@ -100,13 +100,11 @@ for j in range(len(link)):
             print('No review, Pass')
             break
         else:
-            items = soup.findAll("span",{'data-hook':"review-body"})
+            items = soup.select('span[data-hook="review-body"] > span')
             print(f"{len(items)} reviews found")
             for i in items:
-                for child in i.children:
-                    if child.string:
-                        reviews.append(child.string)
-                        search_query_list.append(SEARCH_QUERY)
+                reviews.append(i.text)
+                search_query_list.append(SEARCH_QUERY)
 
 print(f"Finished: {len(reviews)} reviews found")
 
