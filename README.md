@@ -1,6 +1,6 @@
 # amazon_review 
 
-2020/02/17
+02/2020
 
 Amazon Reviews Crawler
 This is the crawling robot that can scrap all reviews of the specific searching query. 
