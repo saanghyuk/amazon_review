@@ -3,8 +3,8 @@
 02/2020
 
 Amazon Reviews Crawler
-This is the crawling robot that can scrap all reviews of the specific searching query. 
-Requirements: requests, bs4, pandas, openpyxl, html5lib, proxycrawl
+This is the crawling robot that can scrap all reviews of the specific searching query. <br>
+**Requirements**: requests, bs4, pandas, openpyxl, html5lib, proxycrawl
 
 
 
