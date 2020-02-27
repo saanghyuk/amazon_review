@@ -62,13 +62,13 @@ print("Start to search asin")
 
 data_asin = list(set(data_asin)) # Leave unique values only
 
-link = []
+links = []
 for i in range(len(data_asin)):
     print(f"Searching asin {i}/{len(data_asin)}")
     html = search_asin(data_asin[i])
     soup = BeautifulSoup(html, 'html5lib')
     for i in soup.findAll("a",{'data-hook':"see-all-reviews-link-foot"}):
-        link.append(i['href'])
+        links.append(i['href'])
 
 #     if soup.find("a",{'data-hook':"see-all-reviews-link-foot"}):
 #         link.append(soup.find("a",{'data-hook':"see-all-reviews-link-foot"})['href'])
@@ -76,7 +76,7 @@ for i in range(len(data_asin)):
 #     else:
 #         print("There is no see all button")
 
-print(f"Finished: {len(link)} links found")
+print(f"Finished: {len(links)} links found")
 # The number of link and the number of ASIN can be different, because there are many products which have no review.
 
 print("Start to search reviews")
@@ -87,9 +87,9 @@ reviews = []
 # ratings=[]
 # dates=[]
 
-for j in range(len(link)):
-    target = link[j]
-    print(f"Searching reviews: {j}/{len(link)}, target is {target}")
+for j in range(len(links)):
+    target = links[j]
+    print(f"Searching reviews: {j}/{len(links)}, target is {target}")
     for k in range(1, 1500):
         html = search_reviews(f"{target}&pageNumber={k}")
         soup = BeautifulSoup(html, 'html5lib')
