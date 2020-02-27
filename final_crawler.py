@@ -60,10 +60,9 @@ Therefore, I needed to remove the same product in the list of ASIN.
 
 print("Start to search asin")
 
-asin_list = list(dict.fromkeys(data_asin))
-data_asin = asin_list
+data_asin = list(set(data_asin)) # Leave unique values only
 
-link=[]
+link = []
 for i in range(len(data_asin)):
     print(f"Searching asin {i}/{len(data_asin)}")
     html = search_asin(data_asin[i])
