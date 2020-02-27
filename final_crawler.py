@@ -76,6 +76,7 @@ for i in range(len(data_asin)):
 #     else:
 #         print("There is no see all button")
 
+links = list(set(links))
 print(f"Finished: {len(links)} links found")
 # The number of link and the number of ASIN can be different, because there are many products which have no review.
 
