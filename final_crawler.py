@@ -84,37 +84,33 @@ print("Start to search reviews")
 # urls=[]
 # titles = []
 search_query_list = []
-reviews=[]
+reviews = []
 # ratings=[]
 # dates=[]
 
 for j in range(len(link)):
-    print(f"Searching reviews: {j}/{len(link)}")
+    target = link[j]
+    print(f"Searching reviews: {j}/{len(link)}, target is {target}")
     for k in range(1, 1500):
-        print(f"Finished: {len(reviews)} reviews found")
-        html = search_reviews(link[j]+'&pageNumber='+str(k))
+        html = search_reviews(f"{target}&pageNumber={k}")
         soup = BeautifulSoup(html, 'html5lib')
         if soup.find(
             'div',
             {"class" : "a-section a-spacing-top-large a-text-center no-reviews-section"}
         ):
-            print('No review, Pass') 
+            print(f'Page {k}: No more reviews, step to next link')
             break
         else:
             items = soup.select('span[data-hook="review-body"] > span')
-            print(f"{len(items)} reviews found")
+            prev_reviews_cnt = len(reviews)
             for i in items:
-<<<<<<< HEAD
-                if i.text== '':
-                    "there is one blank span element"
+                if i.text == '':
+                    # Ignore blank elements
                     continue
                 else:
                     reviews.append(i.text)
                     search_query_list.append(SEARCH_QUERY)
-=======
-                reviews.append(i.text)
-                search_query_list.append(SEARCH_QUERY)
->>>>>>> be7c30a63cf3e89a0cedc50526222d5fb680c44d
+            print(f"Page {k}: {len(reviews) - prev_reviews_cnt} reviews found")
 
 print(f"Finished: {len(reviews)} reviews found")
 print("Start to generate report")
