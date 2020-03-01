@@ -6,7 +6,7 @@ from urllib.parse import quote
 # Input Search Query
 SEARCH_QUERY = 'tv'
 
-PROXY_CRAWL_TOKEN = '8wJqpL2FErGiPGX7QWP6Aw'
+PROXY_CRAWL_TOKEN = 'JNsGFIUa5_amNHUfiLkHPA'
 # PROXY_CRAWL_TOKEN = 'K-9nDJsiR1tb0vbXVAaSOQ'
 
 def get_proxy(url):
@@ -85,34 +85,52 @@ print("Start to search reviews")
 # titles = []
 search_query_list = []
 reviews = []
-# ratings=[]
+ratings=[]
 # dates=[]
 
-for j in range(len(links)):
-    target = links[j]
-    print(f"Searching reviews: {j}/{len(links)}, target is {target}")
-    for k in range(1, 1500):
-        html = search_reviews(f"{target}&pageNumber={k}")
-        soup = BeautifulSoup(html, 'html5lib')
-        if soup.find(
-            'div',
-            {"class" : "a-section a-spacing-top-large a-text-center no-reviews-section"}
-        ):
-            print(f'Page {k}: No more reviews, step to next link')
-            break
-        else:
-            items = soup.select('span[data-hook="review-body"] > span')
-            prev_reviews_cnt = len(reviews)
-            for i in items:
-                if i.text == '':
-                    # Ignore blank elements
-                    continue
-                else:
-                    reviews.append(i.text)
-                    search_query_list.append(SEARCH_QUERY)
-            print(f"Page {k}: {len(reviews) - prev_reviews_cnt} reviews found")
+print("Start to search reviews")
+
+
+for j in range(0, len(links)):
+
+        target = links[j]
+        print(f"Searching reviews: {j}/{len(links)}, target is {target}")
+        for k in range(1, 50000):
+            html = search_reviews(f"{target}&pageNumber={k}")
+            soup = BeautifulSoup(html, 'html5lib')
+            if soup.find(
+                'div',
+                {"class" : "a-section a-spacing-top-large a-text-center no-reviews-section"}
+            ):
+                print(f'Page {k}: No more reviews, step to next link')
+                break
+            else:
+                items = soup.select('span[data-hook="review-body"] > span')
+                ratings_in_page = soup.select('div.reviews-content span.a-icon-alt')
+                prev_reviews_cnt = len(reviews)
+                prev_ratings_cnt = len(ratings)
+
+                for i in items:
+                    if i.text == '':
+                        # Ignore blank elements
+                        continue
+                    else:
+                        reviews.append(i.text)
+                        search_query_list.append(SEARCH_QUERY)
+                        
+                for l in ratings_in_page:
+                    if l.text == '':
+                        # Ignore blank elements
+                        continue
+                    else:
+                        ratings.append(l.text)
+                
+                print(f"Page {k}: {len(ratings) - prev_ratings_cnt} ratings found")
+                print(f"Page {k}: {len(reviews) - prev_reviews_cnt} reviews found")
+                print("---------------------------")
 
 print(f"Finished: {len(reviews)} reviews found")
+
 print("Start to generate report")
 # rev={'dates':dates, 'titles':titles, 'ratings':ratings, 'reviews':reviews, 'url':urls} #converting the reviews list into a dictionary
 
