@@ -88,6 +88,7 @@ reviews = []
 ratings=[]
 # dates=[]
 
+
 print("Start to search reviews")
 
 
@@ -105,31 +106,34 @@ for j in range(0, len(links)):
                 print(f'Page {k}: No more reviews, step to next link')
                 break
             else:
-                items = soup.select('span[data-hook="review-body"] > span')
-                ratings_in_page = soup.select('div.reviews-content span.a-icon-alt')
+#                 items = soup.select('span[data-hook="review-body"] > span')
+                items = soup.select('div[data-hook="review"]')
+#                 reviews_in_page = soup.select()
+#                 ratings_in_page = soup.select('div.reviews-content span.a-icon-alt')
+        
                 prev_reviews_cnt = len(reviews)
                 prev_ratings_cnt = len(ratings)
-
+                
                 for i in items:
-                    if i.text == '':
+                    ratings_in_page = i.find("i", {'data-hook':'review-star-rating'}).text
+                    reviews_in_page = i.find('span', {'data-hook': 'review-body'}).text
+                    if reviews_in_page == '':
                         # Ignore blank elements
                         continue
                     else:
-                        reviews.append(i.text)
+                        ratings.append(ratings_in_page)
+                        reviews.append(reviews_in_page)
                         search_query_list.append(SEARCH_QUERY)
                         
-                for l in ratings_in_page:
-                    if l.text == '':
-                        # Ignore blank elements
-                        continue
-                    else:
-                        ratings.append(l.text)
                 
                 print(f"Page {k}: {len(ratings) - prev_ratings_cnt} ratings found")
                 print(f"Page {k}: {len(reviews) - prev_reviews_cnt} reviews found")
                 print("---------------------------")
 
+                
+                
 print(f"Finished: {len(reviews)} reviews found")
+
 
 print("Start to generate report")
 # rev={'dates':dates, 'titles':titles, 'ratings':ratings, 'reviews':reviews, 'url':urls} #converting the reviews list into a dictionary
